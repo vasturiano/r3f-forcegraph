@@ -6,10 +6,14 @@ React-Three-Fiber Force-Directed Graph
 [![NPM Downloads][npm-downloads-img]][npm-downloads-url]
 
 <p align="center">
-  <a href="//vasturiano.github.io/r3f-forcegraph/example/basic/"><img width="80%" src="https://vasturiano.github.io/r3f-forcegraph/example/preview.png"></a>
+  <a href="//vasturiano.github.io/r3f-forcegraph/example/large-graph/"><img width="80%" src="https://vasturiano.github.io/r3f-forcegraph/example/preview.png"></a>
 </p>
 
 [React-Three-Fiber](https://github.com/pmndrs/react-three-fiber) bindings for the [three-forcegraph](https://github.com/vasturiano/three-forcegraph) ThreeJS component.
+
+#### Check out the examples:
+* [Basic](https://vasturiano.github.io/r3f-forcegraph/example/basic/) ([source](https://github.com/vasturiano/r3f-forcegraph/blob/master/example/basic/index.html))
+* [Larger Graph](https://vasturiano.github.io/r3f-forcegraph/example/large-graph/) ([source](https://github.com/vasturiano/r3f-forcegraph/blob/master/example/large-graph/index.html))
 
 
 ## Quick start
