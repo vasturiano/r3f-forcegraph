@@ -33,8 +33,8 @@
     import { TrackballControls } from '@react-three/drei';
 
     const GraphViz = () => {
-      const graphRef = useRef();
-      useFrame(() => graphRef.current?.tickFrame());
+      const fgRef = useRef();
+      useFrame(() => (fgRef.current.tickFrame()));
 
       const N = 300;
       const gData = useMemo(() => ({
@@ -48,7 +48,7 @@
       }), [N]);
 
       return <R3fForceGraph
-        ref={graphRef}
+        ref={fgRef}
         graphData={gData}
         onNodeHover={useCallback((...args) => console.log('node hover', ...args), [])}
         onLinkHover={useCallback((...args) => console.log('link hover', ...args), [])}

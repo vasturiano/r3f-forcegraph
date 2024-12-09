@@ -23,8 +23,13 @@ or using a *script* tag
 ```
 then
 ```jsx
+useFrame(() => fgRef.current.tickFrame());
+
+...
+
 <Canvas>
-  <R3fForceGraph 
+  <R3fForceGraph
+    ref={fgRef}
     graphData={myData}
   />
 </Canvas>
