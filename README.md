@@ -14,6 +14,7 @@ React-Three-Fiber Force-Directed Graph
 #### Check out the examples:
 * [Basic](https://vasturiano.github.io/r3f-forcegraph/example/basic/) ([source](https://github.com/vasturiano/r3f-forcegraph/blob/master/example/basic/index.html))
 * [Larger Graph](https://vasturiano.github.io/r3f-forcegraph/example/large-graph/) ([source](https://github.com/vasturiano/r3f-forcegraph/blob/master/example/large-graph/index.html))
+* [Directional moving particles](https://vasturiano.github.io/r3f-forcegraph/example/directional-links-particles/) ([source](https://github.com/vasturiano/r3f-forcegraph/blob/master/example/directional-links-particles/index.html))
 
 
 ## Quick start
