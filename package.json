@@ -1,0 +1,76 @@
+{
+  "name": "r3f-forcegraph",
+  "version": "0.1.0",
+  "description": "Force-directed graph as a React Three Fiber component",
+  "type": "module",
+  "unpkg": "dist/r3f-forcegraph.min.js",
+  "main": "dist/r3f-forcegraph.mjs",
+  "module": "dist/r3f-forcegraph.mjs",
+  "types": "dist/r3f-forcegraph.d.ts",
+  "exports": {
+    "types": "./dist/r3f-forcegraph.d.ts",
+    "umd": "./dist/r3f-forcegraph.min.js",
+    "default": "./dist/r3f-forcegraph.mjs"
+  },
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vasturiano/r3f-forcegraph.git"
+  },
+  "homepage": "https://github.com/vasturiano/r3f-forcegraph",
+  "keywords": [
+    "3d",
+    "force",
+    "simulation",
+    "graph",
+    "force-directed graph",
+    "react-three-fiber",
+    "webgl",
+    "visualization",
+    "three"
+  ],
+  "author": {
+    "name": "Vasco Asturiano",
+    "url": "https://github.com/vasturiano"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vasturiano/r3f-forcegraph/issues"
+  },
+  "scripts": {
+    "build": "rimraf dist && rollup -c",
+    "dev": "rollup -w -c rollup.config.dev.js",
+    "prepare": "npm run build"
+  },
+  "files": [
+    "dist/**/*",
+    "example/**/*"
+  ],
+  "dependencies": {
+    "jerrypick": "1",
+    "three-forcegraph": "1"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "three": ">=0.154"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.26.0",
+    "@babel/preset-env": "^7.26.0",
+    "@babel/preset-react": "^7.26.3",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-commonjs": "^28.0.1",
+    "@rollup/plugin-node-resolve": "^15.3.0",
+    "@rollup/plugin-replace": "^6.0.1",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@types/react": "^19.0.1",
+    "rimraf": "^6.0.1",
+    "rollup": "^4.28.1",
+    "rollup-plugin-dts": "^6.1.1",
+    "three": "^0.171.0",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=12"
+  }
+}

@@ -1,0 +1,75 @@
+<head>
+  <style> body { margin: 0; } </style>
+
+  <script type="importmap">{ "imports": {
+    "three": "https://esm.sh/three",
+    "react": "https://esm.sh/react@18",
+    "react/": "https://esm.sh/react@18/",
+    "react-dom": "https://esm.sh/react-dom@18",
+    "react-dom/": "https://esm.sh/react-dom@18/",
+    "@react-three/fiber": "https://esm.sh/@react-three/fiber?external=react,react-dom,three",
+    "@react-three/drei": "https://esm.sh/@react-three/drei?external=@react-three/fiber,react,react-dom,three"
+  }}</script>
+  <script type="module">
+    import * as THREE from 'three';
+    window.THREE = THREE;
+    import * as React from 'react';
+    window.React = React;
+  </script>
+
+  <script src="//unpkg.com/@babel/standalone"></script>
+
+  <script src="//unpkg.com/r3f-forcegraph" defer></script>
+<!--  <script src="../../dist/r3f-forcegraph.js" defer></script>-->
+</head>
+
+<body>
+  <div id="r3fScene"></div>
+
+  <script type="text/jsx" data-type="module">
+    import { useMemo, useCallback, useRef } from "react";
+    import ReactDOM from "react-dom";
+    import { Canvas, useFrame } from '@react-three/fiber';
+    import { TrackballControls } from '@react-three/drei';
+
+    const GraphViz = () => {
+      const graphRef = useRef();
+      useFrame(() => graphRef.current?.tickFrame());
+
+      const N = 300;
+      const gData = useMemo(() => ({
+        nodes: [...Array(N).keys()].map(i => ({ id: i })),
+        links: [...Array(N).keys()]
+          .filter(id => id)
+          .map(id => ({
+            source: id,
+            target: Math.round(Math.random() * (id-1))
+          }))
+      }), [N]);
+
+      return <R3fForceGraph
+        ref={graphRef}
+        graphData={gData}
+        onNodeHover={useCallback((...args) => console.log('node hover', ...args), [])}
+        onLinkHover={useCallback((...args) => console.log('link hover', ...args), [])}
+        onNodeClick={useCallback((...args) => console.log('node click', ...args), [])}
+        onLinkClick={useCallback((...args) => console.log('link click', ...args), [])}
+      />;
+    }
+
+    const Scene = () => {
+      return <div style={{ height: window.innerHeight }}>
+        <Canvas camera={{ position: [0, 0, 1000], far: 8000 }}>
+          <TrackballControls />
+          <color attach="background" args={[0, 0, 0.01]}/>
+          <ambientLight intensity={Math.PI}/>
+          <directionalLight intensity={0.6 * Math.PI}/>
+          <GraphViz />
+        </Canvas>
+      </div>;
+    };
+
+    ReactDOM.createRoot(document.getElementById('r3fScene'))
+      .render(<Scene />);
+  </script>
+</body>
