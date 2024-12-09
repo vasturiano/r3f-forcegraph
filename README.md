@@ -14,8 +14,13 @@ React-Three-Fiber Force-Directed Graph
 #### Check out the examples:
 * [Basic](https://vasturiano.github.io/r3f-forcegraph/example/basic/) ([source](https://github.com/vasturiano/r3f-forcegraph/blob/master/example/basic/index.html))
 * [Larger Graph](https://vasturiano.github.io/r3f-forcegraph/example/large-graph/) ([source](https://github.com/vasturiano/r3f-forcegraph/blob/master/example/large-graph/index.html))
+* [Directional arrows](https://vasturiano.github.io/r3f-forcegraph/example/directional-links-arrows/) ([source](https://github.com/vasturiano/r3f-forcegraph/blob/master/example/directional-links-arrows/index.html))
 * [Directional moving particles](https://vasturiano.github.io/r3f-forcegraph/example/directional-links-particles/) ([source](https://github.com/vasturiano/r3f-forcegraph/blob/master/example/directional-links-particles/index.html))
-
+* [Text as nodes](https://vasturiano.github.io/r3f-forcegraph/example/text-nodes/index.html) ([source](https://github.com/vasturiano/r3f-forcegraph/blob/master/example/text-nodes/index.html))
+* [Highlight nodes/links](https://vasturiano.github.io/r3f-forcegraph/example/highlight/) ([source](https://github.com/vasturiano/r3f-forcegraph/blob/master/example/highlight/index.html))
+* [Click to expand/collapse nodes](https://vasturiano.github.io/r3f-forcegraph/example/expandable-nodes/) ([source](https://github.com/vasturiano/r3f-forcegraph/blob/master/example/expandable-nodes/index.html))
+* [Node collision detection](https://vasturiano.github.io/r3f-forcegraph/example/collision-detection/) ([source](https://github.com/vasturiano/r3f-forcegraph/blob/master/example/collision-detection/index.html))
+* [Force-directed tree (DAG mode)](https://vasturiano.github.io/r3f-forcegraph/example/tree/) ([source](https://github.com/vasturiano/r3f-forcegraph/blob/master/example/tree/index.html))
 
 ## Quick start
 

@@ -1,0 +1,105 @@
+<head>
+  <style> body { margin: 0; } </style>
+
+  <script type="importmap">{ "imports": {
+    "three": "https://esm.sh/three",
+    "react": "https://esm.sh/react@18",
+    "react/": "https://esm.sh/react@18/",
+    "react-dom": "https://esm.sh/react-dom@18",
+    "react-dom/": "https://esm.sh/react-dom@18/",
+    "@react-three/fiber": "https://esm.sh/@react-three/fiber?external=react,react-dom,three",
+    "@react-three/drei": "https://esm.sh/@react-three/drei?external=@react-three/fiber,react,react-dom,three"
+  }}</script>
+  <script type="module">
+    import * as THREE from 'three';
+    window.THREE = THREE;
+    import * as React from 'react';
+    window.React = React;
+  </script>
+
+  <script src="//unpkg.com/@babel/standalone"></script>
+
+  <script src="//unpkg.com/r3f-forcegraph" defer></script>
+<!--  <script src="../../dist/r3f-forcegraph.js" defer></script>-->
+
+  <script src="../datasets/random-data.js"></script>
+</head>
+
+<body>
+  <div id="r3fScene"></div>
+
+  <script type="text/jsx" data-type="module">
+    import { useMemo, useState, useRef, useCallback } from "react";
+    import ReactDOM from "react-dom";
+    import { Canvas, useFrame } from '@react-three/fiber';
+    import { TrackballControls } from '@react-three/drei';
+
+    const GraphViz = () => {
+      const fgRef = useRef();
+      useFrame(() => (fgRef.current.tickFrame()));
+
+      const graphData = useMemo(() => genRandomTree(600, true), []);
+
+      const rootId = 0;
+
+      const nodesById = useMemo(() => {
+        const nodesById = Object.fromEntries(graphData.nodes.map(node => [node.id, node]));
+
+        // link parent/children
+        graphData.nodes.forEach(node => {
+          node.collapsed = node.id !== rootId;
+          node.childLinks = [];
+        });
+        graphData.links.forEach(link => nodesById[link.source].childLinks.push(link));
+
+        return nodesById;
+      }, [graphData]);
+
+      const getPrunedTree = useCallback(() => {
+        const visibleNodes = [];
+        const visibleLinks = [];
+        (function traverseTree(node = nodesById[rootId]) {
+          visibleNodes.push(node);
+          if (node.collapsed) return;
+          visibleLinks.push(...node.childLinks);
+          node.childLinks
+                  .map(link => ((typeof link.target) === 'object') ? link.target : nodesById[link.target]) // get child node
+                  .forEach(traverseTree);
+        })();
+
+        return { nodes: visibleNodes, links: visibleLinks };
+      }, [nodesById]);
+
+      const [prunedTree, setPrunedTree] = useState(getPrunedTree());
+
+      const handleNodeClick = useCallback(node => {
+        node.collapsed = !node.collapsed; // toggle collapse state
+        setPrunedTree(getPrunedTree())
+      }, []);
+
+      return <R3fForceGraph
+        ref={fgRef}
+        graphData={prunedTree}
+        linkDirectionalParticles={2}
+        linkDirectionalParticleWidth={0.8}
+        nodeColor={node => !node.childLinks.length ? 'green' : node.collapsed ? 'red' : 'yellow'}
+        onNodeClick={handleNodeClick}
+      />;
+    }
+
+    const Scene = () => {
+      return <div style={{ height: window.innerHeight }}>
+        <Canvas camera={{ position: [0, 0, 180], far: 5000 }}>
+          <TrackballControls />
+          <color attach="background" args={[0, 0, 0.01]}/>
+          <ambientLight intensity={Math.PI}/>
+          <directionalLight intensity={0.6 * Math.PI}/>
+          <GraphViz />
+        </Canvas>
+      </div>;
+    };
+
+    ReactDOM.createRoot(document.getElementById('r3fScene'))
+      .render(<Scene />);
+  </script>
+</body>

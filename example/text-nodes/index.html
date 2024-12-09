@@ -27,10 +27,11 @@
   <div id="r3fScene"></div>
 
   <script type="text/jsx" data-type="module">
-    import { useCallback, useRef, useEffect, useState } from "react";
+    import { useRef, useEffect, useState } from "react";
     import ReactDOM from "react-dom";
     import { Canvas, useFrame } from '@react-three/fiber';
     import { TrackballControls } from '@react-three/drei';
+    import SpriteText from "//unpkg.com/three-spritetext/dist/three-spritetext.mjs";
 
     const GraphViz = () => {
       const fgRef = useRef();
@@ -39,23 +40,26 @@
       const [gData, setGData] = useState();
 
       useEffect(() => {
-        fetch('../datasets/blocks.json').then(res => res.json())
+        fetch('../datasets/miserables.json').then(res => res.json())
           .then(setGData);
       }, []);
 
       return <R3fForceGraph
         ref={fgRef}
         graphData={gData}
-        nodeAutoColorBy="user"
-        linkDirectionalParticles={1}
-        linkDirectionalParticleWidth={0.9}
-        onNodeHover={useCallback(node => node && console.log(node), [])}
+        nodeAutoColorBy="group"
+        nodeThreeObject={node => {
+          const sprite = new SpriteText(node.id);
+          sprite.color = node.color;
+          sprite.textHeight = 8;
+          return sprite;
+        }}
       />;
     }
 
     const Scene = () => {
       return <div style={{ height: window.innerHeight }}>
-        <Canvas camera={{ position: [0, 0, 1500], far: 8000 }}>
+        <Canvas camera={{ position: [0, 0, 400], far: 4000 }}>
           <TrackballControls />
           <color attach="background" args={[0, 0, 0.01]}/>
           <ambientLight intensity={Math.PI}/>

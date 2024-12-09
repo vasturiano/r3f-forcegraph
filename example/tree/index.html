@@ -1,0 +1,132 @@
+<head>
+  <style> body { margin: 0; } </style>
+
+  <script type="importmap">{ "imports": {
+    "three": "https://esm.sh/three",
+    "react": "https://esm.sh/react@18",
+    "react/": "https://esm.sh/react@18/",
+    "react-dom": "https://esm.sh/react-dom@18",
+    "react-dom/": "https://esm.sh/react-dom@18/",
+    "@react-three/fiber": "https://esm.sh/@react-three/fiber?external=react,react-dom,three",
+    "@react-three/drei": "https://esm.sh/@react-three/drei?external=@react-three/fiber,react,react-dom,three"
+  }}</script>
+  <script type="module">
+    import * as THREE from 'three';
+    window.THREE = THREE;
+    import * as React from 'react';
+    window.React = React;
+  </script>
+
+  <script src="//unpkg.com/@babel/standalone"></script>
+
+  <script src="//unpkg.com/d3-dsv"></script>
+  <script src="//unpkg.com/dat.gui"></script>
+  <script src="//unpkg.com/d3-octree"></script>
+  <script src="//unpkg.com/d3-force-3d"></script>
+
+  <script src="//unpkg.com/r3f-forcegraph" defer></script>
+<!--  <script src="../../dist/r3f-forcegraph.js" defer></script>-->
+</head>
+
+<body>
+  <div id="r3fScene"></div>
+
+  <script type="text/jsx" data-type="module">
+    import { useRef, useEffect, useState } from "react";
+    import ReactDOM from "react-dom";
+    import { Canvas, useFrame } from '@react-three/fiber';
+    import { TrackballControls } from '@react-three/drei';
+
+    const useForceUpdate = () => {
+      const setToggle = useState(false)[1];
+      return () => setToggle(b => !b);
+    };
+
+    const GraphViz = () => {
+      const fgRef = useRef();
+      useFrame(() => (fgRef.current.tickFrame()));
+
+      const [data, setData] = useState();
+      useEffect(() => {
+        fetch('../datasets/d3-dependencies.csv')
+          .then(r => r.text())
+          .then(d3.csvParse)
+          .then(data => {
+            const nodes = [], links = [];
+            data.forEach(({ size, path }) => {
+              const levels = path.split('/'),
+                level = levels.length - 1,
+                module = level > 0 ? levels[1] : null,
+                leaf = levels.pop(),
+                parent = levels.join('/');
+
+              const node = {
+                path,
+                leaf,
+                module,
+                size: +size || 20,
+                level
+              };
+
+              nodes.push(node);
+
+              if (parent) {
+                links.push({source: parent, target: path, targetNode: node});
+              }
+            });
+
+            setData({ nodes, links });
+          });
+      }, []);
+
+      const [controls] = useState({ 'DAG Orientation': 'td'});
+      const forceUpdate = useForceUpdate();
+
+      useEffect(() => {
+        // add controls GUI
+        const gui = new dat.GUI();
+        gui.add(controls, 'DAG Orientation', ['td', 'bu', 'lr', 'rl', 'radialout', 'radialin', null])
+          .onChange(forceUpdate);
+      }, []);
+
+      useEffect(() => {
+        // add collision force
+        fgRef.current.d3Force('collision', d3.forceCollide(node => Math.cbrt(node.size)))
+          // Decrease repel intensity
+          .d3Force('charge').strength(-15);
+      }, []);
+
+      return <R3fForceGraph
+        ref={fgRef}
+        graphData={data}
+        dagMode={controls['DAG Orientation']}
+        dagLevelDistance={200}
+        backgroundColor="#101020"
+        linkColor={() => 'rgba(255,255,255,0.2)'}
+        nodeRelSize={1}
+        nodeId="path"
+        nodeVal="size"
+        nodeAutoColorBy="module"
+        linkDirectionalParticles={2}
+        linkDirectionalParticleWidth={0.9}
+        linkDirectionalParticleSpeed={0.006}
+        d3VelocityDecay={0.3}
+      />;
+    }
+
+    const Scene = () => {
+      return <div style={{ height: window.innerHeight }}>
+        <Canvas camera={{ position: [0, 0, 850], far: 9000 }}>
+          <TrackballControls />
+          <color attach="background" args={[0, 0, 0.01]}/>
+          <ambientLight intensity={Math.PI}/>
+          <directionalLight intensity={0.6 * Math.PI}/>
+          <GraphViz />
+        </Canvas>
+      </div>;
+    };
+
+    ReactDOM.createRoot(document.getElementById('r3fScene'))
+      .render(<Scene />);
+  </script>
+</body>

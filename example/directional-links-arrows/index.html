@@ -21,13 +21,15 @@
 
   <script src="//unpkg.com/r3f-forcegraph" defer></script>
 <!--  <script src="../../dist/r3f-forcegraph.js" defer></script>-->
+
+  <script src="../datasets/random-data.js"></script>
 </head>
 
 <body>
   <div id="r3fScene"></div>
 
   <script type="text/jsx" data-type="module">
-    import { useCallback, useRef, useEffect, useState } from "react";
+    import { useRef } from "react";
     import ReactDOM from "react-dom";
     import { Canvas, useFrame } from '@react-three/fiber';
     import { TrackballControls } from '@react-three/drei';
@@ -36,26 +38,18 @@
       const fgRef = useRef();
       useFrame(() => (fgRef.current.tickFrame()));
 
-      const [gData, setGData] = useState();
-
-      useEffect(() => {
-        fetch('../datasets/blocks.json').then(res => res.json())
-          .then(setGData);
-      }, []);
-
       return <R3fForceGraph
         ref={fgRef}
-        graphData={gData}
-        nodeAutoColorBy="user"
-        linkDirectionalParticles={1}
-        linkDirectionalParticleWidth={0.9}
-        onNodeHover={useCallback(node => node && console.log(node), [])}
+        graphData={genRandomTree(40)}
+        linkDirectionalArrowLength={3.5}
+        linkDirectionalArrowRelPos={1}
+        linkCurvature={0.25}
       />;
     }
 
     const Scene = () => {
       return <div style={{ height: window.innerHeight }}>
-        <Canvas camera={{ position: [0, 0, 1500], far: 8000 }}>
+        <Canvas camera={{ position: [0, 0, 400], far: 4000 }}>
           <TrackballControls />
           <color attach="background" args={[0, 0, 0.01]}/>
           <ambientLight intensity={Math.PI}/>

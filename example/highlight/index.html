@@ -1,0 +1,115 @@
+<head>
+  <style> body { margin: 0; } </style>
+
+  <script type="importmap">{ "imports": {
+    "three": "https://esm.sh/three",
+    "react": "https://esm.sh/react@18",
+    "react/": "https://esm.sh/react@18/",
+    "react-dom": "https://esm.sh/react-dom@18",
+    "react-dom/": "https://esm.sh/react-dom@18/",
+    "@react-three/fiber": "https://esm.sh/@react-three/fiber?external=react,react-dom,three",
+    "@react-three/drei": "https://esm.sh/@react-three/drei?external=@react-three/fiber,react,react-dom,three"
+  }}</script>
+  <script type="module">
+    import * as THREE from 'three';
+    window.THREE = THREE;
+    import * as React from 'react';
+    window.React = React;
+  </script>
+
+  <script src="//unpkg.com/@babel/standalone"></script>
+
+  <script src="//unpkg.com/r3f-forcegraph" defer></script>
+<!--  <script src="../../dist/r3f-forcegraph.js" defer></script>-->
+
+  <script src="../datasets/random-data.js"></script>
+</head>
+
+<body>
+  <div id="r3fScene"></div>
+
+  <script type="text/jsx" data-type="module">
+    import { useMemo, useState, useRef } from "react";
+    import ReactDOM from "react-dom";
+    import { Canvas, useFrame } from '@react-three/fiber';
+    import { TrackballControls } from '@react-three/drei';
+
+    const GraphViz = () => {
+      const fgRef = useRef();
+      useFrame(() => (fgRef.current.tickFrame()));
+
+      const data = useMemo(() => {
+        const gData = genRandomTree(80);
+
+        // cross-link node objects
+        gData.links.forEach(link => {
+          const a = gData.nodes[link.source];
+          const b = gData.nodes[link.target];
+          !a.neighbors && (a.neighbors = []);
+          !b.neighbors && (b.neighbors = []);
+          a.neighbors.push(b);
+          b.neighbors.push(a);
+
+          !a.links && (a.links = []);
+          !b.links && (b.links = []);
+          a.links.push(link);
+          b.links.push(link);
+        });
+
+        return gData;
+      }, []);
+
+      const [highlightNodes, setHighlightNodes] = useState(new Set());
+      const [highlightLinks, setHighlightLinks] = useState(new Set());
+      const [hoverNode, setHoverNode] = useState(null);
+
+      const handleNodeHover = node => {
+        highlightNodes.clear();
+        highlightLinks.clear();
+        if (node) {
+          highlightNodes.add(node);
+          node.neighbors.forEach(neighbor => highlightNodes.add(neighbor));
+          node.links.forEach(link => highlightLinks.add(link));
+        }
+        setHoverNode(node || null);
+      };
+
+      const handleLinkHover = link => {
+        highlightNodes.clear();
+        highlightLinks.clear();
+        if (link) {
+          highlightLinks.add(link);
+          highlightNodes.add(link.source);
+          highlightNodes.add(link.target);
+        }
+        setHighlightLinks(new Set(highlightLinks));
+      };
+
+      return <R3fForceGraph
+        ref={fgRef}
+        graphData={data}
+        nodeColor={node => highlightNodes.has(node) ? node === hoverNode ? 'rgb(255,0,0,1)' : 'rgba(255,160,0,0.8)' : 'rgba(0,255,255,0.6)'}
+        linkWidth={link => highlightLinks.has(link) ? 4 : 1}
+        linkDirectionalParticles={link => highlightLinks.has(link) ? 4 : 0}
+        linkDirectionalParticleWidth={4}
+        onNodeHover={handleNodeHover}
+        onLinkHover={handleLinkHover}
+      />;
+    }
+
+    const Scene = () => {
+      return <div style={{ height: window.innerHeight }}>
+        <Canvas camera={{ position: [0, 0, 500], far: 5000 }}>
+          <TrackballControls />
+          <color attach="background" args={[0, 0, 0.01]}/>
+          <ambientLight intensity={Math.PI}/>
+          <directionalLight intensity={0.6 * Math.PI}/>
+          <GraphViz />
+        </Canvas>
+      </div>;
+    };
+
+    ReactDOM.createRoot(document.getElementById('r3fScene'))
+      .render(<Scene />);
+  </script>
+</body>

@@ -21,13 +21,16 @@
 
   <script src="//unpkg.com/r3f-forcegraph" defer></script>
 <!--  <script src="../../dist/r3f-forcegraph.js" defer></script>-->
+
+  <script src="//unpkg.com/d3-octree"></script>
+  <script src="//unpkg.com/d3-force-3d"></script>
 </head>
 
 <body>
   <div id="r3fScene"></div>
 
   <script type="text/jsx" data-type="module">
-    import { useCallback, useRef, useEffect, useState } from "react";
+    import { useRef, useEffect, useState } from "react";
     import ReactDOM from "react-dom";
     import { Canvas, useFrame } from '@react-three/fiber';
     import { TrackballControls } from '@react-three/drei';
@@ -36,26 +39,57 @@
       const fgRef = useRef();
       useFrame(() => (fgRef.current.tickFrame()));
 
-      const [gData, setGData] = useState();
+      const nodeRelSize = 4;
+      const [graphData, setGraphData] = useState({ nodes: [], links: [] });
 
       useEffect(() => {
-        fetch('../datasets/blocks.json').then(res => res.json())
-          .then(setGData);
-      }, []);
+        const fg = fgRef.current;
+
+        const N = 300;
+
+        // Deactivate existing forces
+        fg.d3Force('center', null);
+        fg.d3Force('charge', null);
+
+        // Add collision and bounding box forces
+        fg.d3Force('collide', d3.forceCollide(nodeRelSize));
+        fg.d3Force('box', () => {
+          const CUBE_HALF_SIDE = nodeRelSize * Math.cbrt(N) * 5;
+
+          nodes.forEach(node => {
+            const x = node.x || 0, y = node.y || 0, z = node.z || 0;
+
+            // bounce on box walls
+            if (Math.abs(x) > CUBE_HALF_SIDE) { node.vx *= -1; }
+            if (Math.abs(y) > CUBE_HALF_SIDE) { node.vy *= -1; }
+            if (Math.abs(z) > CUBE_HALF_SIDE) { node.vz *= -1; }
+          });
+        });
+
+        // Generate nodes
+        const nodes = [...Array(N).keys()].map(() => ({
+          // Initial velocity in random direction
+          vx: Math.random(),
+          vy: Math.random(),
+          vz: Math.random()
+        }));
+
+        setGraphData({ nodes, links: [] });
+      }, [nodeRelSize]);
 
       return <R3fForceGraph
         ref={fgRef}
-        graphData={gData}
-        nodeAutoColorBy="user"
-        linkDirectionalParticles={1}
-        linkDirectionalParticleWidth={0.9}
-        onNodeHover={useCallback(node => node && console.log(node), [])}
+        graphData={graphData}
+        nodeRelSize={nodeRelSize}
+        cooldownTime={Infinity}
+        d3AlphaDecay={0}
+        d3VelocityDecay={0}
       />;
     }
 
     const Scene = () => {
       return <div style={{ height: window.innerHeight }}>
-        <Canvas camera={{ position: [0, 0, 1500], far: 8000 }}>
+        <Canvas camera={{ position: [0, 0, 400], far: 4000 }}>
           <TrackballControls />
           <color attach="background" args={[0, 0, 0.01]}/>
           <ambientLight intensity={Math.PI}/>
