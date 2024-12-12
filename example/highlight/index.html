@@ -21,18 +21,18 @@
 
   <script src="//unpkg.com/r3f-forcegraph" defer></script>
 <!--  <script src="../../dist/r3f-forcegraph.js" defer></script>-->
-
-  <script src="../datasets/random-data.js"></script>
 </head>
 
 <body>
   <div id="r3fScene"></div>
 
   <script type="text/jsx" data-type="module">
-    import { useMemo, useState, useRef } from "react";
-    import ReactDOM from "react-dom";
+    import { useMemo, useState, useRef } from 'react';
+    import ReactDOM from 'react-dom';
     import { Canvas, useFrame } from '@react-three/fiber';
     import { TrackballControls } from '@react-three/drei';
+
+    import { genRandomTree } from '../datasets/random-data.js';
 
     const GraphViz = () => {
       const fgRef = useRef();

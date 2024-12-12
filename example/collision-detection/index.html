@@ -21,19 +21,17 @@
 
   <script src="//unpkg.com/r3f-forcegraph" defer></script>
 <!--  <script src="../../dist/r3f-forcegraph.js" defer></script>-->
-
-  <script src="//unpkg.com/d3-octree"></script>
-  <script src="//unpkg.com/d3-force-3d"></script>
 </head>
 
 <body>
   <div id="r3fScene"></div>
 
   <script type="text/jsx" data-type="module">
-    import { useRef, useEffect, useState } from "react";
-    import ReactDOM from "react-dom";
+    import { useRef, useEffect, useState } from 'react';
+    import ReactDOM from 'react-dom';
     import { Canvas, useFrame } from '@react-three/fiber';
     import { TrackballControls } from '@react-three/drei';
+    import { forceCollide } from 'https://esm.sh/d3-force-3d';
 
     const GraphViz = () => {
       const fgRef = useRef();
@@ -52,7 +50,7 @@
         fg.d3Force('charge', null);
 
         // Add collision and bounding box forces
-        fg.d3Force('collide', d3.forceCollide(nodeRelSize));
+        fg.d3Force('collide', forceCollide(nodeRelSize));
         fg.d3Force('box', () => {
           const CUBE_HALF_SIDE = nodeRelSize * Math.cbrt(N) * 5;
 

@@ -19,11 +19,6 @@
 
   <script src="//unpkg.com/@babel/standalone"></script>
 
-  <script src="//unpkg.com/d3-dsv"></script>
-  <script src="//unpkg.com/dat.gui"></script>
-  <script src="//unpkg.com/d3-octree"></script>
-  <script src="//unpkg.com/d3-force-3d"></script>
-
   <script src="//unpkg.com/r3f-forcegraph" defer></script>
 <!--  <script src="../../dist/r3f-forcegraph.js" defer></script>-->
 </head>
@@ -32,10 +27,13 @@
   <div id="r3fScene"></div>
 
   <script type="text/jsx" data-type="module">
-    import { useRef, useEffect, useState } from "react";
-    import ReactDOM from "react-dom";
+    import { useRef, useEffect, useState } from 'react';
+    import ReactDOM from 'react-dom';
     import { Canvas, useFrame } from '@react-three/fiber';
     import { TrackballControls } from '@react-three/drei';
+    import { csvParse } from 'https://esm.sh/d3-dsv';
+    import { forceCollide } from 'https://esm.sh/d3-force-3d';
+    import { GUI } from 'https://esm.sh/dat.gui';
 
     const useForceUpdate = () => {
       const setToggle = useState(false)[1];
@@ -50,7 +48,7 @@
       useEffect(() => {
         fetch('../datasets/d3-dependencies.csv')
           .then(r => r.text())
-          .then(d3.csvParse)
+          .then(csvParse)
           .then(data => {
             const nodes = [], links = [];
             data.forEach(({ size, path }) => {
@@ -84,14 +82,14 @@
 
       useEffect(() => {
         // add controls GUI
-        const gui = new dat.GUI();
+        const gui = new GUI();
         gui.add(controls, 'DAG Orientation', ['td', 'bu', 'lr', 'rl', 'radialout', 'radialin', null])
           .onChange(forceUpdate);
       }, []);
 
       useEffect(() => {
         // add collision force
-        fgRef.current.d3Force('collision', d3.forceCollide(node => Math.cbrt(node.size)))
+        fgRef.current.d3Force('collision', forceCollide(node => Math.cbrt(node.size)))
           // Decrease repel intensity
           .d3Force('charge').strength(-15);
       }, []);
