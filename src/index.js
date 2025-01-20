@@ -50,8 +50,7 @@ const ForceGraph = forwardRef(({ onNodeHover, onLinkHover, onNodeClick, onLinkCl
   return createElement(ForceGraphComp, {
     ...ptProps,
     ref,
-    onPointerOver: onHoverInt,
-    onPointerOut: onHoverInt,
+    onPointerMove: onHoverInt,
     onClick: onClickInt
   });
 });
