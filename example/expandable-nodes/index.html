@@ -84,10 +84,10 @@
 
     const Scene = () => {
       return <div style={{ height: window.innerHeight }}>
-        <Canvas camera={{ position: [0, 0, 180], far: 5000 }}>
+        <Canvas flat camera={{ position: [0, 0, 180], far: 5000 }}>
           <TrackballControls />
           <color attach="background" args={[0, 0, 0.01]}/>
-          <ambientLight intensity={Math.PI}/>
+          <ambientLight color={0xcccccc} intensity={Math.PI}/>
           <directionalLight intensity={0.6 * Math.PI}/>
           <GraphViz />
         </Canvas>
