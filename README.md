@@ -29,7 +29,7 @@ import R3fForceGraph from 'r3f-forcegraph';
 ```
 or using a *script* tag
 ```html
-<script src="//unpkg.com/r3f-forcegraph"></script>
+<script src="//cdn.jsdelivr.net/npm/r3f-forcegraph"></script>
 ```
 then
 ```jsx
