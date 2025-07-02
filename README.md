@@ -98,9 +98,12 @@ useFrame(() => fgRef.current.tickFrame());
 | <b>linkDirectionalArrowResolution</b> | <i>number</i> | 8 | Geometric resolution of the arrow head, expressed in how many slice segments to divide the cone base circumference. Higher values yield smoother arrows. |
 | <b>linkDirectionalParticles</b> | <i>number</i>, <i>string</i> or <i>func</i> | 0 | Link object accessor function, attribute or a numeric constant for the number of particles (small spheres) to display over the link line. The particles are distributed equi-spaced along the line, travel in the direction `source` > `target`, and can be used to indicate link directionality. |
 | <b>linkDirectionalParticleSpeed</b> | <i>number</i>, <i>string</i> or <i>func</i> | 0.01 | Link object accessor function, attribute or a numeric constant for the directional particles speed, expressed as the ratio of the link length to travel per frame. Values above `0.5` are discouraged. |
+| <b>linkDirectionalParticleOffset</b> | <i>number</i>, <i>string</i> or <i>func</i> | 0 | Link object accessor function, attribute or a numeric constant for the offset of the directional particles initial position, expressed as a value between 0 and 1, relative to a full position cycle. |
 | <b>linkDirectionalParticleWidth</b> | <i>number</i>, <i>string</i> or <i>func</i> | 0.5 | Link object accessor function, attribute or a numeric constant for the directional particles width. Values are rounded to the nearest decimal for indexing purposes. |
 | <b>linkDirectionalParticleColor</b> | <i>string</i> or <i>func</i> | `color` | Link object accessor function or attribute for the directional particles color. |
 | <b>linkDirectionalParticleResolution</b> | <i>number</i> | 4 | Geometric resolution of each 3D directional particle, expressed in how many slice segments to divide the circumference. Higher values yield smoother particles. |
+| <b>linkDirectionalParticleThreeObject</b> | <i>Object3d</i>, <i>string</i> or <i>func</i> || Link object accessor function or attribute for a custom 3d object to use in the directional particles. Should return an instance of [ThreeJS Object3d](https://threejs.org/docs/index.html#api/core/Object3D). Activating this will ignore the set values for the particle's width, color and resolution. |
+
 
 | Method | Arguments | Description |
 | --- | :--: | --- |
